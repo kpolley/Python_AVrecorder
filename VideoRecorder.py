@@ -6,7 +6,7 @@ class VideoRecorder:
     def __init__(self):
         self.file_name = None
         self.camera = picamera.PiCamera()
-        # self.camera.resolution = (640, 648)
+        self.camera.framerate = 25
 
     def record(self):
         self.camera.start_recording(self.file_name)

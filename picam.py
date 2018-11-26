@@ -1,20 +1,35 @@
 from AudioRecorder import AudioRecorder
 from VideoRecorder import VideoRecorder
 import time
+import threading
+import subprocess
 from gpiozero import Button
 from signal import pause
 
-def start_AVrecording():
+def record_ten_seconds():
     timestamp = time.time()
 
+    start_AVrecording(timestamp)
+    time.sleep(10)
+    stop_AVrecording(timestamp)
+
+def start_AVrecording(timestamp):
+    print("Starting threads...")
     video_thread.start(timestamp)
     audio_thread.start(timestamp)
-    time.sleep(10)
+
+def stop_AVrecording(timestamp):
+    print("Stopping threads...")
     audio_thread.stop()
     video_thread.stop()
 
-def test_audio():
-    audio_thread.test()
+    elapsed_time = time.time() - timestamp
+
+    print("starting mux...")
+    cmd = "ffmpeg -i {0}.wav -i {0}.h264 -c:v copy -c:a aac -strict experimental {0}.mp4".format(timestamp)
+    subprocess.call(cmd, shell=True)
+
+    print("done")
 
 def main():
     global video_thread
@@ -24,10 +39,10 @@ def main():
     audio_thread = AudioRecorder()
 
     # Allows time for camera to boot up
-    time.sleep(5)
+    time.sleep(2)
 
     button = Button(14)
-    button.when_pressed = start_AVrecording
+    button.when_pressed = record_ten_seconds
     print("ready for action!")
     pause()
 

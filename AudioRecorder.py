@@ -23,8 +23,6 @@ class AudioRecorder():
         self.q.put(indata.copy())
 
     def record(self):
-
-        print("starting stream...")
         with sf.SoundFile(self.file_name, mode='x', samplerate=self.samplerate,
                       channels=self.channels) as file:
             with sd.InputStream(samplerate=self.samplerate,
@@ -34,11 +32,10 @@ class AudioRecorder():
                     file.write(self.q.get())
 
     def stop(self):
-        print("stopping stream...")
         self.open = False
 
     def start(self, timestamp):
         self.file_name = '{}.wav'.format(timestamp)
-        
+
         audio_thread = threading.Thread(target=self.record)
         audio_thread.start()
