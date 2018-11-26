@@ -1,20 +1,21 @@
 import threading
 import queue
+import numpy
 import sounddevice as sd
 import soundfile as sf
-import numpy
 
 class AudioRecorder():
 
     def __init__(self):
 
         self.open = True
-        self.file_name = None
+        self.file_name = 'default_name'
+        self.channels = 1
+        self.q = queue.Queue()
+        
         # Get samplerate
         device_info = sd.query_devices(2, 'input')
         self.samplerate = int(device_info['default_samplerate'])
-        self.channels = 1
-        self.q = queue.Queue()
 
     def callback(self, indata, frames, time, status):
         """This is called (from a separate thread) for each audio block."""

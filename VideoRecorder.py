@@ -4,7 +4,7 @@ import picamera
 
 class VideoRecorder:
     def __init__(self):
-        self.file_name = None
+        self.file_name = 'default_name'
         self.camera = picamera.PiCamera()
         self.camera.framerate = 25
 

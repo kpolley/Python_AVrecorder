@@ -1,8 +1,8 @@
-from AudioRecorder import AudioRecorder
-from VideoRecorder import VideoRecorder
 import time
 import threading
 import subprocess
+from AudioRecorder import AudioRecorder
+from VideoRecorder import VideoRecorder
 from gpiozero import Button
 from signal import pause
 
@@ -23,12 +23,9 @@ def stop_AVrecording(timestamp):
     audio_thread.stop()
     video_thread.stop()
 
-    elapsed_time = time.time() - timestamp
-
     print("starting mux...")
     cmd = "ffmpeg -i {0}.wav -i {0}.h264 -c:v copy -c:a aac -strict experimental {0}.mp4".format(timestamp)
     subprocess.call(cmd, shell=True)
-
     print("done")
 
 def main():
