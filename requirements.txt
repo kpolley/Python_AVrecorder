@@ -1,0 +1,4 @@
+picamera
+pyaudio
+wave
+gpiozero

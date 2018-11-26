@@ -1,20 +1,16 @@
 import threading
 import picamera
 
-class VideoRecorder():
-    def __init__(self):
-        self.resolution = (640, 648)
-        self.file_name = 'my_video.h264'
-        self.duration = 10 # seconds
-        self.camera = None
-
-    def boot_camera(self):
+class VideoRecorder:
+    def __init__(self, timestamp):
+        self.file_name = '{}.h264'.format(timestamp)
         self.camera = picamera.PiCamera()
-        self.camera.resolution = self.resolution
+        self.camera.resolution = (640, 648)
 
     def record(self):
         self.camera.start_recording(self.file_name)
-        self.camera.wait_recording(self.duration)
+
+    def stop(self):
         self.camera.stop_recording()
 
     def start(self):
