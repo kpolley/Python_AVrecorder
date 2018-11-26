@@ -1,48 +1,40 @@
 import threading
-import pyaudio
-import wave
+import queue
+import sounddevice as sd
+import soundfile as sf
+import numpy
 
 class AudioRecorder():
 
     def __init__(self, timestamp):
-        self.open = True
-        self.rate = 48000
-        self.frames_per_buffer = 1024
-        self.channels = 1
-        self.format = pyaudio.paInt16
-        self.audio_filename = '{}.wav'.format(timestamp)
-        self.audio = pyaudio.PyAudio()
-        self.stream = self.audio.open(format=self.format,
-                                      channels=self.channels,
-                                      rate=self.rate,
-                                      input=True,
-                                      frames_per_buffer = self.frames_per_buffer)
 
-        self.audio_frames = []
+        self.open = True
+        # Get samplerate
+        device_info = sd.query_devices(2, 'input')
+        self.samplerate = int(device_info['default_samplerate'])
+        self.channels = 1
+        self.audio_filename = '{}.wav'.format(timestamp)
+        self.q = queue.Queue()
+
+    def callback(self, indata, frames, time, status):
+        """This is called (from a separate thread) for each audio block."""
+        if status:
+            print(status, file=sys.stderr)
+        self.q.put(indata.copy())
 
     def record(self):
-        self.stream.start_stream()
-        while(self.open == True):
-            data = self.stream.read(self.frames_per_buffer)
-            self.audio_frames.append(data)
-            if(self.open == False):
-                break
+        print("starting stream...")
+        with sf.SoundFile(self.audio_filename, mode='x', samplerate=self.samplerate,
+                      channels=self.channels) as file:
+            with sd.InputStream(samplerate=self.samplerate,
+                                channels=self.channels, callback=self.callback):
+
+                while(self.open == True):
+                    file.write(self.q.get())
 
     def stop(self):
-        if self.open==True:
-            self.open = False
-            self.stream.stop_stream()
-            self.stream.close()
-            self.audio.terminate()
-               
-            waveFile = wave.open(self.audio_filename, 'wb')
-            waveFile.setnchannels(self.channels)
-            waveFile.setsampwidth(self.audio.get_sample_size(self.format))
-            waveFile.setframerate(self.rate)
-            waveFile.writeframes(b''.join(self.audio_frames))
-            waveFile.close()
-        
-        pass
+        print("stopping stream...")
+        self.open = False
 
     def start(self):
         audio_thread = threading.Thread(target=self.record)
