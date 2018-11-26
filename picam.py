@@ -5,10 +5,13 @@ from gpiozero import Button
 from signal import pause
 
 def start_AVrecording():
-    # video_thread.start()
-    audio_thread.start()
+    timestamp = time.time()
+
+    video_thread.start(timestamp)
+    audio_thread.start(timestamp)
     time.sleep(10)
     audio_thread.stop()
+    video_thread.stop()
 
 def test_audio():
     audio_thread.test()
@@ -17,10 +20,8 @@ def main():
     global video_thread
     global audio_thread
     
-    timestamp = time.time()
-
-    video_thread = VideoRecorder(timestamp)
-    audio_thread = AudioRecorder(timestamp)
+    video_thread = VideoRecorder()
+    audio_thread = AudioRecorder()
 
     # Allows time for camera to boot up
     time.sleep(5)

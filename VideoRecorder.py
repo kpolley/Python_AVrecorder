@@ -1,11 +1,12 @@
 import threading
+import random
 import picamera
 
 class VideoRecorder:
-    def __init__(self, timestamp):
-        self.file_name = '{}.h264'.format(timestamp)
+    def __init__(self):
+        self.file_name = None
         self.camera = picamera.PiCamera()
-        self.camera.resolution = (640, 648)
+        # self.camera.resolution = (640, 648)
 
     def record(self):
         self.camera.start_recording(self.file_name)
@@ -13,6 +14,8 @@ class VideoRecorder:
     def stop(self):
         self.camera.stop_recording()
 
-    def start(self):
+    def start(self, timestamp):
+        self.file_name = '{}.h264'.format(timestamp)
+
         video_thread = threading.Thread(target=self.record)
         video_thread.start()
