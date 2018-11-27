@@ -35,18 +35,19 @@ def main():
     global tmp_dir
     global final_dir
 
-    '''Creates tmp directory if does not exist'''
+    # Creates tmp directory if does not exist
     tmp_dir = os.path.expanduser('~/.tmp_media')
     if(os.path.isdir(tmp_dir) == False):
         print("Can't find tmp media directory, creating...")
         os.mkdir(tmp_dir)
 
-    '''Creates final media directory if does not exist'''
+    # Creates final media directory if does not exist
     final_dir = os.path.expanduser('~/media/')
     if(os.path.isdir(final_dir) == False):
         print("Can't find media directory, creating...")
         os.mkdir(final_dir)
 
+    # Initializes threads
     video_thread = VideoRecorder()
     audio_thread = AudioRecorder()
 

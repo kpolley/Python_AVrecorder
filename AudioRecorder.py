@@ -9,7 +9,7 @@ class AudioRecorder():
     def __init__(self):
 
         self.open = True
-        self.file_name = 'default_name'
+        self.file_name = 'default_name' # This should be replaces with a value given in self.start()
         self.channels = 1
         self.q = queue.Queue()
         
@@ -18,7 +18,8 @@ class AudioRecorder():
         self.samplerate = int(device_info['default_samplerate'])
 
     def callback(self, indata, frames, time, status):
-        """This is called (from a separate thread) for each audio block."""
+
+        # This is called (from a separate thread) for each audio block.
         if status:
             print(status, file=sys.stderr)
         self.q.put(indata.copy())
