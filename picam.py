@@ -8,7 +8,9 @@ from gpiozero import Button
 from signal import pause
 
 def record_ten_seconds():
-    file_name = time.time()
+    a = time.asctime(time.localtime(time.time () ))
+    a = a.replace(" ","-").replace(":","")
+    file_name = a
     
     start_AVrecording(file_name)
     time.sleep(10)
@@ -54,10 +56,12 @@ def main():
     # Allows time for camera to boot up
     time.sleep(2)
 
-    button = Button(14)
-    button.when_pressed = record_ten_seconds
-    print("ready for action!")
-    pause()
+    #button = Button(14)
+    #button.when_pressed = record_ten_seconds
+    print("recording for 10 seconds")
+    record_ten_seconds()
+    print("finsihing recording")
+    #pause()
 
 if __name__ == "__main__":
     main()
