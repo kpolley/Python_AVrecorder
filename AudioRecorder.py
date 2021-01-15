@@ -14,7 +14,7 @@ class AudioRecorder():
         self.q = queue.Queue()
         
         # Get samplerate
-        device_info = sd.query_devices(2, 'input')
+        device_info = sd.query_devices(0, 'input')
         self.samplerate = int(device_info['default_samplerate'])
 
     def callback(self, indata, frames, time, status):
