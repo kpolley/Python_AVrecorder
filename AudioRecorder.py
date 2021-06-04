@@ -9,7 +9,7 @@ class AudioRecorder():
     def __init__(self):
 
         self.open = True
-        self.file_name = 'default_name' # This should be replaces with a value given in self.start()
+        self.file_name = 'default_name'  # This will be replaced with the value given in self.start()
         self.channels = 1
         self.q = queue.Queue()
         

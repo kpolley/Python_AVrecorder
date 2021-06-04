@@ -1,19 +1,17 @@
 import time
-import threading
 import subprocess
 import os
+import sys
 from AudioRecorder import AudioRecorder
 from VideoRecorder import VideoRecorder
-from gpiozero import Button
-from signal import pause
 
-def record_ten_seconds():
+def record_media(rec_time):
     a = time.asctime(time.localtime(time.time () ))
     a = a.replace(" ","-").replace(":","")
     file_name = a
     
     start_AVrecording(file_name)
-    time.sleep(10)
+    time.sleep(rec_time)
     stop_AVrecording(file_name)
 
 def start_AVrecording(file_name):
@@ -38,13 +36,13 @@ def main():
     global final_dir
 
     # Creates tmp directory if does not exist
-    tmp_dir = os.path.expanduser('~/.tmp_media')
+    tmp_dir = os.path.expanduser('~/aa-cam/media/raw_media')
     if(os.path.isdir(tmp_dir) == False):
         print("Can't find tmp media directory, creating...")
         os.mkdir(tmp_dir)
 
     # Creates final media directory if does not exist
-    final_dir = os.path.expanduser('~/media/')
+    final_dir = os.path.expanduser('~/aa-cam/media')
     if(os.path.isdir(final_dir) == False):
         print("Can't find media directory, creating...")
         os.mkdir(final_dir)
@@ -56,12 +54,10 @@ def main():
     # Allows time for camera to boot up
     time.sleep(2)
 
-    #button = Button(14)
-    #button.when_pressed = record_ten_seconds
-    print("recording for 10 seconds")
-    record_ten_seconds()
+    print("recording for " + str(rec_time) + " seconds")
+    record_media(rec_time)
     print("finsihing recording")
-    #pause()
 
 if __name__ == "__main__":
+    rec_time = int(sys.argv[1])
     main()
