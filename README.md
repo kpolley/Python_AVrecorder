@@ -11,5 +11,8 @@ Right now, this code is written for a specific purpose & hardware (Raspberry Pi 
 Install on the rpi:
 `pip install image` or `pip install Pillow`
 
+Set-up microphone gains:
+`alsamixer`
+
 
 
