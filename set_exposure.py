@@ -19,13 +19,13 @@ iris = 0
 # Exposure control constants:
 TARGET_XP = 120
 TOLERANCE = 5
-GAIN = 0.2
+GAIN = 0.1
 
-camera = PiCamera()
+camera = picamera.PiCamera()
 
 
 def aperture(value):
-    os.system('p-iris_ctrl ' + str(int(value)))
+    os.system('python3 p-iris_ctrl.py ' + str(int(value)))
 
 
 def write_to_file(filename, content):
@@ -76,38 +76,39 @@ try:
 
     if len(sys.argv) - 1 == 1:
         TARGET_XP = sys.argv[1]
-    if not TARGET_XP.isdecimal():
+    if not str(TARGET_XP).isdecimal():
         print("Target must be a number between 0 and 255")
         exit()
+    TARGET_XP = int(TARGET_XP)
     TARGET_XP = saturate(TARGET_XP, 0, 255)
 
     camera.start_preview()
     ready = False
     while not ready:
-        print("Testing iso %d, speed %d, aperture %d", iso_options[iso], speed_options[speed], iris)
+        print("Testing iso " + str(iso_options[iso]) + ", speed " + str(speed_options[speed]) + ", aperture " + str(iris))
         aperture(iris)
         exposure_error = TARGET_XP - brightness(capture_preview())
 
         if exposure_error > TOLERANCE:
             if iris > 0:
                 iris = saturate(iris - math.ceil(exposure_error * GAIN), 0, 100)
-            elif speed < len(speed_options):
+            elif speed < len(speed_options) - 1:
                 speed += 1
-            elif iso < len(iso_options):
+            elif iso < len(iso_options) -1:
                 iso += 1
             else:
-                print("Environment too dark! Unable to expose image to target of %d", TARGET_XP)
+                print("Environment too dark! Unable to expose image to target of " + str(TARGET_XP))
                 exit()
 
         elif exposure_error < -TOLERANCE:
             if iris < 100:
-                iris = saturate(iris + math.ceil(exposure_error * gain), 0, 100)
+                iris = saturate(iris + math.ceil(-exposure_error * GAIN), 0, 100)
             elif speed > 0:
                 speed -= 1
             elif iso > 0:
                 iso -= 1
             else:
-                print("Environment too bright! unable to expose image to target of %d", TARGET_XP)
+                print("Environment too bright! unable to expose image to target of ", + str(TARGET_XP))
 
         else:
             ready = True
