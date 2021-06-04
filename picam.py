@@ -74,7 +74,10 @@ if __name__ == "__main__":
             "Arguments incorrect -> {script} {record_time seconds} {audio boolean}"
         else:
             rec_time = int(sys.argv[1])
-            audio = bool(sys.argv[2])
+            if sys.argv[2] == "True":
+                audio = True
+            elif sys.argv[2] == "False":
+                audio = False
     except Exception:
         "Arguments incorrect -> {script} {record_time seconds} {audio boolean}"
     main()
