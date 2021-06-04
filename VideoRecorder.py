@@ -17,6 +17,7 @@ class VideoRecorder:
             break
         self.file_name = 'default_name' # This should be replaces with a value given in self.start()
         self.camera = picamera.PiCamera()
+        self.camera.resolution = (640, 480)
         self.camera.framerate = 25
         self.camera.rotation = 180
         self.camera.iso = iso
