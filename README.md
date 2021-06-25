@@ -23,4 +23,17 @@ python3 set_exposure.py {desired exposure 0 - 255 : int}
 python3 picam.py {record_time seconds} {audio boolean}
 ```
 
+## Remote Control
 
+```
+pip install paramiko
+pip install scp
+```
+See `aa_lab > util.py` package for code:  
+```
+my_ssh_client = SSHClientSCP(host_ip='{ip address}', psswd='{password}')
+SSHClientSCP.RAW_MEDIA_DIR = '{absolute path}'
+my_ssh_client.set_picam(120)
+my_ssh.client.record_picam(30, True)
+my_ssh_client.get_rawmedia()
+```
