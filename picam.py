@@ -17,7 +17,8 @@ def start_AVrecording(file_name, rec_time):
     print("Starting threads...")
     video_thread.start(file_name, tmp_dir, rec_time)
     if audio:
-        audio_thread.start(file_name, tmp_dir, rec_time)
+        audio_thread.start(file_name, tmp_dir)
+        audio_thread.stop(rec_time)
 
 
 def main():

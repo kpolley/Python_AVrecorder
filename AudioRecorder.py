@@ -1,50 +1,47 @@
 import threading
-import wave
+import queue
+import time
+import sounddevice as sd
+import soundfile as sf
 
-import pyaudio
-
-
-class AudioRecorder:
+class AudioRecorder():
 
     def __init__(self):
-        self.audio = pyaudio.pyAudio()  # create pyaudio instantiation
+
         self.open = True
         self.file_name = 'default_name'  # This will be replaced with the value given in self.start()
-        self.form_1 = pyaudio.paInt16  # 16 bit resolution
-        self.channels = 1  # 1 channel
-        self.chunk = 4096  # 2612 samples for buffer
-        self.dev_index = 0  # device index found by p.get_device_info_by_index(ii)
-        self.samp_rate = 44100  # 44.1kHz sampling rate
+        self.channels = 1
+        self.q = queue.Queue()
 
-    def record(self, rec_time):
-        # create pyaudio stream
-        stream = self.audio.open(format=self.form_1, rate=self.samp_rate, channels=self.channels,
-                                 input_device_index=self.dev_index, input=True,
-                                 frames_per_buffer=self.chunk)
+        # Get samplerate
+        device_info = sd.query_devices(0, 'input')
+        self.samplerate = int(device_info['default_samplerate'])
+
+    def callback(self, indata, frames, time, status):
+
+        # This is called (from a separate thread) for each audio block.
+        if status:
+            print(status, file=sys.stderr)
+        self.q.put(indata.copy())
+
+    def record(self):
         print("Starting audio recording")
-        self.frames = []
-        # loop through stream and append audio chunks to frame array
-        for ii in range(0, int((self.samp_rate / self.chunk) * rec_time)):
-            data = stream.read(self.chunk)
-            self.frames.append(data)
+        with sf.SoundFile(self.file_name, mode='x', samplerate=self.samplerate,
+                      channels=self.channels) as file:
+            with sd.InputStream(samplerate=self.samplerate,
+                                channels=self.channels, callback=self.callback):
 
+                while(self.open == True):
+                    file.write(self.q.get())
+
+    def stop(self, rec_time):
+        time.sleep(rec_time)
+        self.open = False
         print("Finished audio recording")
 
-        stream.stop_stream()
-        stream.close()
-        self.audio.terminate()
-        self.save_audio()
-
-    def save_audio(self):
-        wavefile = wave.open(self.file_name, 'wb')
-        wavefile.setnchannels(self.channels)
-        wavefile.setsampwidth(self.audio.get_sample_size(self.form_1))
-        wavefile.setframerate(self.samp_rate)
-        wavefile.writeframes(b''.join(self.frames))
-        wavefile.close()
-
-    def start(self, file_name, file_dir, rec_time):
+    def start(self, file_name, file_dir):
+        self.open = True
         self.file_name = '{}/{}.wav'.format(file_dir, file_name)
 
-        audio_thread = threading.Thread(target=self.record, args=rec_time)
+        audio_thread = threading.Thread(target=self.record)
         audio_thread.start()

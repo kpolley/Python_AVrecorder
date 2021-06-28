@@ -9,7 +9,7 @@ Right now, this code is written for a specific purpose & hardware (Raspberry Pi 
 ## Pre-Requisite
 
 1. Set ssh port to an obscure uncommon port.
-2. Install on the rpi: `pip install image` or `pip install Pillow` and `pip install pyaudio`
+2. Install on the rpi: `pip install image` or `pip install Pillow` and `python3 -m pip install sounddevice`
 3. Set-up microphone gains: `alsamixer`
 4. Install VNC Viewer to set-up focus: Download [here](https://www.realvnc.com/en/connect/download/viewer/)
 5. SSH into the rpi and run `startx`.   

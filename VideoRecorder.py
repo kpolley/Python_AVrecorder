@@ -36,5 +36,5 @@ class VideoRecorder:
     def start(self, file_name, file_dir, rec_time):
         self.file_name = '{}/{}.h264'.format(file_dir, file_name)
 
-        video_thread = threading.Thread(target=self.record, args=rec_time)
+        video_thread = threading.Thread(target=self.record, args=(rec_time,))
         video_thread.start()
