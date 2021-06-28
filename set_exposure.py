@@ -1,6 +1,7 @@
 import io
 import sys
 import math
+from pathlib import Path
 
 import picamera
 from PIL import Image
@@ -8,6 +9,7 @@ from PIL import ImageStat
 
 from p_iris_ctrl import p_iris_ctrl
 
+home = str(Path.home())
 
 iso_options = [100, 200, 320, 400, 500, 640, 800]
 speed_options = [500, 1000, 2000, 4000, 8000, 16667, 33333]
@@ -116,7 +118,7 @@ try:
             ready = True
 
     print("Settings successful! Writing to camera_settings.txt")
-    write_to_file("camera_settings.txt", str(iso_options[iso]) + "\n" + str(speed_options[speed]) + "\n")
+    write_to_file(home + "/aa-cam/camera_settings.txt", str(iso_options[iso]) + "\n" + str(speed_options[speed]) + "\n")
 
 finally:
     camera.stop_preview()

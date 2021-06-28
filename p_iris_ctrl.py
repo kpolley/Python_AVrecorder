@@ -1,6 +1,9 @@
-import RPi.GPIO as GPIO
 import time
 import sys
+from pathlib import Path
+
+import RPi.GPIO as GPIO
+
 
 # pin definitions
 coil_a_plus = 2
@@ -23,8 +26,8 @@ def p_iris_ctrl(target_aperture):
             target_aperture = 92
         if target_aperture < 0:
             target_aperture = 0
-
-        file = open("iris_state.txt", "r")
+        home = str(Path.home())
+        file = open(home + "/aa-cam/iris_state.txt", "r")
         current = file.readline()
         file.close()
         if not current.isdecimal():
@@ -66,7 +69,7 @@ def p_iris_ctrl(target_aperture):
 
             time.sleep(0.01)
 
-        file = open("iris_state.txt", "w")
+        file = open(home + "/aa-cam/iris_state.txt", "w")
         file.write(str(current_count))
         file.close()
         print("Target reached")
