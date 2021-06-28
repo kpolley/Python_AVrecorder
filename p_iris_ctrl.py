@@ -11,16 +11,16 @@ coil_a_minus = 3
 coil_b_plus = 4
 coil_b_minus = 14
 
-# GPIO setup
-GPIO.setmode(GPIO.BCM)
-
-GPIO.setup(coil_a_plus, GPIO.OUT)
-GPIO.setup(coil_a_minus, GPIO.OUT)
-GPIO.setup(coil_b_plus, GPIO.OUT)
-GPIO.setup(coil_b_minus, GPIO.OUT)
-
 
 def p_iris_ctrl(target_aperture):
+    # GPIO setup
+    GPIO.setmode(GPIO.BCM)
+
+    GPIO.setup(coil_a_plus, GPIO.OUT)
+    GPIO.setup(coil_a_minus, GPIO.OUT)
+    GPIO.setup(coil_b_plus, GPIO.OUT)
+    GPIO.setup(coil_b_minus, GPIO.OUT)
+
     try:
         if target_aperture > 92:
             target_aperture = 92
