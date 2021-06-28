@@ -30,11 +30,11 @@ def stop_AVrecording(file_name):
 
     video_thread.stop()
 
-    if audio:
-        print("starting mux...")
-        cmd = "ffmpeg -i {1}/{0}.wav -i {1}/{0}.h264 -c:v copy -c:a aac -strict experimental {2}/{0}.mp4".format(file_name, tmp_dir, final_dir)
-        subprocess.call(cmd, shell=True)
-        print("done")
+    # if audio:
+    #     print("starting mux...")
+    #     cmd = "ffmpeg -i {1}/{0}.wav -i {1}/{0}.h264 -c:v copy -c:a aac -strict experimental {2}/{0}.mp4".format(file_name, tmp_dir, final_dir)
+    #     subprocess.call(cmd, shell=True)
+    #     print("done")
 
 
 def main():
@@ -50,10 +50,10 @@ def main():
         os.mkdir(tmp_dir)
 
     # Creates final media directory if does not exist
-    final_dir = os.path.expanduser('~/aa-cam/media')
-    if not os.path.isdir(final_dir):
-        print("Can't find media directory, creating...")
-        os.mkdir(final_dir)
+    # final_dir = os.path.expanduser('~/aa-cam/media')
+    # if not os.path.isdir(final_dir):
+    #     print("Can't find media directory, creating...")
+    #     os.mkdir(final_dir)
 
     # Initializes threads
     video_thread = VideoRecorder()
