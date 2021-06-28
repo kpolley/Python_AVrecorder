@@ -66,7 +66,7 @@ def capture_preview():
     stream = io.BytesIO()
     camera.iso = iso_options[iso]
     camera.shutter_speed = speed_options[speed]
-    camera.zoom = (0.1, 0.25, 0.4, 0.5)
+    camera.zoom = (0, 0, 1, 1)  # (x, y, w, h)
     camera.capture(stream, format='jpeg', resize=(320, 240))
     stream.seek(0)
     image = Image.open(stream)
