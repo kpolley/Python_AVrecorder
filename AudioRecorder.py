@@ -1,10 +1,13 @@
 import threading
 import queue
 import time
+import sys
+import numpy
 import sounddevice as sd
 import soundfile as sf
 
-class AudioRecorder():
+
+class AudioRecorder:
 
     def __init__(self):
 
@@ -13,9 +16,10 @@ class AudioRecorder():
         self.channels = 1
         self.q = queue.Queue()
 
-        # Get samplerate
+        # Get samplerate and set device
         device_info = sd.query_devices(0, 'input')
         self.samplerate = int(device_info['default_samplerate'])
+        sd.default.device = 0
 
     def callback(self, indata, frames, time, status):
 
@@ -27,11 +31,11 @@ class AudioRecorder():
     def record(self):
         print("Starting audio recording")
         with sf.SoundFile(self.file_name, mode='x', samplerate=self.samplerate,
-                      channels=self.channels) as file:
+                          channels=self.channels) as file:
             with sd.InputStream(samplerate=self.samplerate,
                                 channels=self.channels, callback=self.callback):
 
-                while(self.open == True):
+                while self.open:
                     file.write(self.q.get())
 
     def stop(self, rec_time):
